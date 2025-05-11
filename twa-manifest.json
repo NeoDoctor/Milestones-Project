@@ -1,8 +1,8 @@
 {
-  "packageId": "com.githubusercontent.raw.twa",
-  "host": "neodoctor.github.io",
-  "name": "Neonatal Care Calculator",
-  "launcherName": "NeoCare Calculator",
+  "packageId": "com.neonatal.milestones",
+  "host": "localhost",
+  "name": "Neonatal Milestones PWA",
+  "launcherName": "Milestones",
   "display": "standalone",
   "themeColor": "#005EB8",
   "navigationColor": "#000000",
@@ -11,27 +11,28 @@
   "navigationDividerColorDark": "#000000",
   "backgroundColor": "#FFFFFF",
   "enableNotifications": true,
-  "startUrl": "/Neonatal-Care-Calculator/",
-  "iconUrl": "./icon-512x512.png",
-  "maskableIconUrl": "./icon-512x512.png",
-  "monochromeIconUrl": "./icon-512x512.png",
+  "startUrl": "/",
+  "scope": "/",
+  "iconUrl": "https://raw.githubusercontent.com/username/repo/main/icon-512x512.png",
+  "maskableIconUrl": "https://raw.githubusercontent.com/username/repo/main/icon-512x512.png",
+  "monochromeIconUrl": "https://raw.githubusercontent.com/username/repo/main/icon-512x512.png",
   "splashScreenFadeOutDuration": 300,
   "signingKey": {
-    "path": "./android.keystore",
+    "path": "./keys/android.keystore",
     "alias": "android"
   },
-  "appVersionName": "3",
-  "appVersionCode": 3,
+  "appVersionName": "1.0.0",
+  "appVersionCode": 1,
   "shortcuts": [
     {
-      "name": "Calculate",
-      "shortName": "Calc",
-      "url": "/Neonatal-Care-Calculator/",
-      "chosenIconUrl": "./icon-192x192.png"
+      "name": "Calculate Milestones",
+      "shortName": "Calculate",
+      "url": "/",
+      "chosenIconUrl": "https://raw.githubusercontent.com/username/repo/main/icon-192x192.png"
     }
   ],
   "generatorApp": "bubblewrap-cli",
-  "webManifestUrl": "https://neodoctor.github.io/Neonatal-Care-Calculator/manifest.json",
+  "webManifestUrl": "/manifest.json",
   "fallbackType": "webview",
   "features": {},
   "enableSiteSettingsShortcut": true,
