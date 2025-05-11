@@ -1,0 +1,49 @@
+{
+    "name": "Neonatal Milestones PWA",
+    "short_name": "Milestones",
+    "description": "Neonatal Care Calculator for milestone tracking",
+    "start_url": "./",
+    "scope": "./",
+    "display": "standalone",
+    "orientation": "any",
+    "theme_color": "#005eb8",
+    "background_color": "#ffffff",
+    "categories": ["medical", "healthcare"],
+    "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+    "prefer_related_applications": false,
+    "icons": [
+        {
+            "src": "./icon-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "./icon-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "./icon-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "maskable"
+        },
+        {
+            "src": "./icon-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
+        }
+    ],
+    "shortcuts": [
+        {
+            "name": "Calculate Milestones",
+            "short_name": "Calculate",
+            "description": "Start a new milestone calculation",
+            "url": "./",
+            "icons": [{ "src": "./icon-192x192.png", "sizes": "192x192" }]
+        }
+    ]
+}

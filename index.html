@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Neonatal Care Calculator</title>
+    <link rel="manifest" href="./manifest.json">
+    <meta name="theme-color" content="#005eb8">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="Neonatal Care Calculator">
+    <link rel="apple-touch-icon" href="./icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="./icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="./icon-512x512.png">
+    <meta name="description" content="Neonatal Care Calculator for milestone tracking">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="Neonatal Care Calculator">
+    <meta name="msapplication-TileColor" content="#005eb8">
+    <meta name="msapplication-tap-highlight" content="no">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        input[type="date"] {
+            flex: 1;
+            height: 40px;
+            padding: 0 10px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            font-size: 1rem; 
+        }
+        .form-group {
+            display: flex;
+            align-items: left;
+            gap: 10px;
+            padding: 0px;
+        }
+        .disclaimer {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            border-radius: 5px;
+            font-size: 0.9rem;
+        }
+        .login-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f4f7fc;
+            font-family: 'Roboto', Arial, sans-serif;
+        }
+
+        .login-screen h2 {
+            font-size: 2rem;
+            color: #005eb8;
+            margin-bottom: 20px;
+        }
+
+        .login-screen input {
+            width: 300px;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+
+        .login-screen button {
+            width: 300px;
+            padding: 10px;
+            font-size: 1rem;
+            background-color: #005eb8;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .login-screen button:hover {
+            background-color: #004494;
+        }
+
+        .login-screen p {
+            font-size: 0.9rem;
+            color: red;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .offline-indicator {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #dc3545;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 4px;
+            display: none;
+            z-index: 1000;
+        }
+        
+        .cached-data-notice {
+            background-color: #fff3cd;
+            color: #856404;
+            padding: 8px;
+            margin: 10px 0;
+            border-radius: 4px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="splashScreen" class="splash-screen">
+        <img src="./icon-512x512.png" alt="App Logo">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Loading...</div>
+    </div>
+
+    <noscript>
+        <p style="text-align: center; color: red;">This application requires JavaScript to function properly. Please enable JavaScript in your browser settings.</p>
+    </noscript>
+
+    <div id="loginScreen" class="login-screen" style="display: none;">
+        <h2>Login</h2>
+        <input type="password" id="passwordInput" placeholder="Enter password">
+        <button onclick="validatePassword()">Login</button>
+        <p id="loginError" style="color: red; display: none;">Incorrect password. Please try again.</p>
+    </div>
+
+    <div id="offlineIndicator" class="offline-indicator">You are offline</div>
+    <div id="cachedDataNotice" class="cached-data-notice">
+        You are viewing cached data. Some features may be limited while offline.
+    </div>
+
+    <div id="mainContent" style="display: none;">
+        <div class="container">
+            <h1>Neonatal Care Calculator</h1>
+            <form id="milestonesForm">
+                <label for="patientName">Patient Name</label>
+                <input type="text" id="patientName" name="patientName" placeholder="Enter patient name" required>
+
+                <label for="nhsNumber">NHS Number</label>
+                <input type="text" id="nhsNumber" name="nhsNumber" placeholder="Enter NHS number" required>
+
+                <label for="dob">Date of Birth</label>
+                <div class="form-group">
+                    <input type="date" id="dob" name="dob" required>
+                    <button type="button" onclick="setTodaysDate()">Today</button>
+                </div>
+
+                <label for="weight">Birth Weight (kg)</label>
+                <input type="number" id="weight" name="weight" step="0.01" placeholder="Enter weight in kg" required>
+
+                <label for="gestationWeeks">Gestation (Weeks)</label>
+                <input type="number" id="gestationWeeks" name="gestationWeeks" placeholder="Enter weeks" required>
+
+                <label for="gestationDays">Gestation (Days)</label>
+                <input type="number" id="gestationDays" name="gestationDays" placeholder="Enter days" required>
+
+                <div class="button-group">
+                    <button type="button" onclick="event.preventDefault(); calculateMilestones();">Calculate Milestones</button>
+                    <button type="button" onclick="formatForPrint()">Format for Printing</button>
+                    <button type="button" onclick="showSettingsPage()" class="settings-button">Settings</button>
+                </div>
+            </form>
+
+            <div class="output" id="output"></div>
+
+            <div class="disclaimer">
+                <p>The results provided by this calculator are only indicative and should not be used in place of, or in opposition to, guidance from qualified medical professionals.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="settingsPage" style="display: none;">
+        <div class="container">
+            <h1>Settings</h1>
+            <form id="settingsForm">
+                <div class="settings-section">
+                    <h2>Cranial Ultrasound Thresholds</h2>
+                    <div class="setting-group">
+                        <label for="cranialUltrasoundGestation">Initial scan if gestation less than (weeks)</label>
+                        <input type="number" id="cranialUltrasoundGestation" placeholder="Default: 28">
+                        
+                        <label for="cranialUltrasoundWeight">Initial scan if weight less than (kg)</label>
+                        <input type="number" id="cranialUltrasoundWeight" step="0.1" placeholder="Default: 1.5">
+                        
+                        <label for="cranialUltrasoundInitialDay">Initial scan day of life</label>
+                        <input type="number" id="cranialUltrasoundInitialDay" placeholder="Default: 3">
+                        
+                        <label for="cranialUltrasoundFollowUpDay">Follow-up scan day of life</label>
+                        <input type="number" id="cranialUltrasoundFollowUpDay" placeholder="Default: 28">
+                        
+                        <label for="cranialUltrasoundFollowUpGestation">Follow-up scan if gestation less than (weeks)</label>
+                        <input type="number" id="cranialUltrasoundFollowUpGestation" placeholder="Default: 29">
+                        
+                        <label for="cranialUltrasoundFollowUpWeight">Follow-up scan if weight less than (kg)</label>
+                        <input type="number" id="cranialUltrasoundFollowUpWeight" step="0.1" placeholder="Default: 1.0">
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <h2>Medication Thresholds</h2>
+                    <div class="setting-group">
+                        <label for="hydrocortisoneGestation">Hydrocortisone if gestation less than (weeks)</label>
+                        <input type="number" id="hydrocortisoneGestation" placeholder="Default: 28">
+                        
+                        <label for="hydrocortisoneReviewDay">Hydrocortisone review day of life</label>
+                        <input type="number" id="hydrocortisoneReviewDay" placeholder="Default: 10">
+                        
+                        <label for="probioticsGestation">Probiotics if gestation less than (weeks)</label>
+                        <input type="number" id="probioticsGestation" placeholder="Default: 32">
+                        
+                        <label for="probioticsWeight">Probiotics if weight less than (kg)</label>
+                        <input type="number" id="probioticsWeight" step="0.1" placeholder="Default: 1.5">
+                        
+                        <label for="caffeineGestation">Caffeine if gestation less than (weeks)</label>
+                        <input type="number" id="caffeineGestation" placeholder="Default: 32">
+                        
+                        <label for="caffeineReviewGestation">Caffeine review at corrected gestation (weeks)</label>
+                        <input type="number" id="caffeineReviewGestation" placeholder="Default: 34">
+                        
+                        <label for="sytronWeight">Sytron if weight less than (kg)</label>
+                        <input type="number" id="sytronWeight" step="0.1" placeholder="Default: 2.5">
+                        
+                        <label for="sytronStartDay">Sytron start day of life</label>
+                        <input type="number" id="sytronStartDay" placeholder="Default: 28">
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <h2>Feeding Guidelines Thresholds</h2>
+                    <div class="setting-group">
+                        <h3>Parenteral Nutrition</h3>
+                        <label for="pnGestation">Automatic PN if gestation less than (weeks)</label>
+                        <input type="number" id="pnGestation" placeholder="Default: 30">
+                        
+                        <label for="pnWeight">Automatic PN if weight less than (kg)</label>
+                        <input type="number" id="pnWeight" step="0.1" placeholder="Default: 1.25">
+                        
+                        <h3>Breast Milk Guidelines</h3>
+                        <label for="trophicGestation">Trophic feeds if gestation less than (weeks)</label>
+                        <input type="number" id="trophicGestation" placeholder="Default: 27">
+                        
+                        <label for="trophicWeight">Trophic feeds if weight less than (kg)</label>
+                        <input type="number" id="trophicWeight" step="0.1" placeholder="Default: 0.8">
+                        
+                        <label for="breastMilkIncrementGestation">Standard increment if gestation more than (weeks)</label>
+                        <input type="number" id="breastMilkIncrementGestation" placeholder="Default: 29">
+                        
+                        <label for="breastMilkIncrementWeight">Standard increment if weight more than (kg)</label>
+                        <input type="number" id="breastMilkIncrementWeight" step="0.1" placeholder="Default: 1.5">
+                        
+                        <label for="fortifierGestation">Fortifier if gestation less than (weeks)</label>
+                        <input type="number" id="fortifierGestation" placeholder="Default: 32">
+                    </div>
+                </div>
+
+                <div class="settings-actions">
+                    <button type="button" onclick="saveMilestoneSettings()" class="save-button">Save Settings</button>
+                    <button type="button" onclick="resetDefaultSettings()" class="reset-button">Reset to Defaults</button>
+                </div>
+            </form>
+            <button type="button" onclick="showMainContent()" class="back-button">Back to Main</button>
+        </div>
+    </div>
+
+    <!-- Load scripts -->
+    <script src="script.js"></script>
+    
+    <!-- PWA initialization -->
+    <script>
+        // Force HTTPS
+        if (window.location.protocol === 'http:' && !window.location.hostname.includes('localhost')) {
+            window.location.href = window.location.href.replace('http:', 'https:');
+        }
+
+        // Register service worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./service-worker.js')
+                    .then(registration => {
+                        console.log('Service Worker registered successfully');
+                    })
+                    .catch(err => {
+                        console.error('Service Worker registration failed:', err);
+                    });
+            });
+        }
+
+        // Handle password input when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            const passwordInput = document.getElementById('passwordInput');
+            const loginButton = document.querySelector('.login-screen button');
+
+            if (passwordInput) {
+                passwordInput.focus();
+                passwordInput.addEventListener('keypress', function(event) {
+                    if (event.key === 'Enter') {
+                        event.preventDefault();
+                        loginButton.click();
+                    }
+                });
+            }
+
+            // Load settings if on settings page
+            if (document.getElementById('settingsPage')) {
+                loadMilestoneSettings();
+            }
+        });
+    </script>
+</body>
+</html>

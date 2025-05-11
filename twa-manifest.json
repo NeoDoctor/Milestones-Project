@@ -1,0 +1,41 @@
+{
+  "packageId": "com.githubusercontent.raw.twa",
+  "host": "neodoctor.github.io",
+  "name": "Neonatal Care Calculator",
+  "launcherName": "NeoCare Calculator",
+  "display": "standalone",
+  "themeColor": "#005EB8",
+  "navigationColor": "#000000",
+  "navigationColorDark": "#000000",
+  "navigationDividerColor": "#000000",
+  "navigationDividerColorDark": "#000000",
+  "backgroundColor": "#FFFFFF",
+  "enableNotifications": true,
+  "startUrl": "/Neonatal-Care-Calculator/",
+  "iconUrl": "./icon-512x512.png",
+  "maskableIconUrl": "./icon-512x512.png",
+  "monochromeIconUrl": "./icon-512x512.png",
+  "splashScreenFadeOutDuration": 300,
+  "signingKey": {
+    "path": "./android.keystore",
+    "alias": "android"
+  },
+  "appVersionName": "3",
+  "appVersionCode": 3,
+  "shortcuts": [
+    {
+      "name": "Calculate",
+      "shortName": "Calc",
+      "url": "/Neonatal-Care-Calculator/",
+      "chosenIconUrl": "./icon-192x192.png"
+    }
+  ],
+  "generatorApp": "bubblewrap-cli",
+  "webManifestUrl": "https://neodoctor.github.io/Neonatal-Care-Calculator/manifest.json",
+  "fallbackType": "webview",
+  "features": {},
+  "enableSiteSettingsShortcut": true,
+  "orientation": "any",
+  "fingerprints": [],
+  "additionalTrustedOrigins": []
+}
